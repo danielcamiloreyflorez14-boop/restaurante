@@ -234,3 +234,18 @@ window.cambiarEstadoPedido = function(id, nuevoEstado) {
         });
     }
 };
+// Esta función hace que suene la campana
+function sonarAlertaPedido() {
+    const sonido = new Audio('https://assets.mixkit.co/active_storage/sfx/2258/2258-preview.mp3');
+    sonido.play().catch(error => console.log("El navegador bloqueó el sonido inicial:", error));
+}
+
+// Aquí le decimos a Firebase que cada vez que entre un pedido nuevo, suene la campana
+firebase.database().ref('pedidos').limitToLast(1).on('child_added', (snapshot) => {
+    // Solo suena si el panel ya cargó los pedidos viejos
+    if (typeof panelCargado !== 'undefined' && panelCargado) {
+        sonarAlertaPedido();
+    }
+});
+let panelCargado = false;
+setTimeout(() => { panelCargado = true; }, 3000); // Espera 3 segundos antes de activar el sonido
