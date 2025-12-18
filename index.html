@@ -49,7 +49,60 @@
 
     <main class="container">
         
+
+            <section id="tracking-section" class="container" style="margin-top: 20px;">
+    <div class="tracking-card">
+        <h3><i class="fas fa-utensils"></i> Rastrea tu Pedido</h3>
+        <p>Ingresa tu número de celular para ver el estado de tu comida:</p>
+        <div class="search-box">
+            <input type="tel" id="track-phone" placeholder="Ej: 3227086610">
+            <button id="btn-track"><i class="fas fa-search"></i> Buscar</button>
+        </div>
+        
+        <div id="tracking-result" style="display: none;">
+            <div class="tracking-visual">
+                <div class="step active" id="step-reservado">
+                    <div class="icon"><i class="fas fa-receipt"></i></div>
+                    <span>Recibido</span>
+                </div>
+                <div class="line"></div>
+                <div class="step" id="step-preparando">
+                    <div class="icon"><i class="fas fa-fire"></i></div>
+                    <span>Cocinando</span>
+                </div>
+                <div class="line"></div>
+                <div class="step" id="step-completado">
+                    <div class="icon"><i class="fas fa-check-circle"></i></div>
+                    <span>¡Listo!</span>
+                </div>
+            </div>
+            <p id="tracking-status-text">Estado: <b>Cargando...</b></p>
+        </div>
+    </div>
+</section>
+
+
+
         <section id="menu-section">
+
+<div class="categories-container">
+    <button class="cat-btn active" data-category="todos">Todos</button>
+    <button class="cat-btn" data-category="Entradas">Entradas</button>
+    <button class="cat-btn" data-category="Sopas">Sopas</button>
+    <button class="cat-btn" data-category="Carnes y Aves">Carnes y Aves</button>
+    <button class="cat-btn" data-category="Pescados">Pescados</button>
+    <button class="cat-btn" data-category="Comida Típica">Típicos</button>
+    <button class="cat-btn" data-category="Pastas">Pastas</button>
+    <button class="cat-btn" data-category="Hamburguesas">Rápida</button>
+    <button class="cat-btn" data-category="Bebidas">Bebidas</button>
+    <button class="cat-btn" data-category="Postres">Postres</button>
+    <button class="cat-btn" data-category="Infantil">Niños</button>
+</div>
+<div class="price-filter-container" style="text-align: center; margin-bottom: 20px;">
+    <button id="btn-ordenar-precio" class="cat-btn" style="background: #27AE60; border-color: #2ecc71;">
+        <i class="fas fa-sort-amount-down-alt"></i> Ver más económicos primero
+    </button>
+</div>
             <div class="glass-box">
                 <h2>🍲 Menú del Día</h2>
                 <p class="subtitle">Descubre los platos más deliciosos y auténticos de nuestra cocina.</p>
