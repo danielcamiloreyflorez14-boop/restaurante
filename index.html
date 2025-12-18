@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurante</title>
+    
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script> 
+    
+    <script>
+        // CONFIGURACIÓN DE TU PROYECTO (COPIADA DE TU ARCHIVO)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAUjXqLedKGyoxoN_D9guU_vz8nLyON3jI",
+            authDomain: "la-cocina-de-la-abuela-658f4.firebaseapp.com",
+            // CRÍTICO: Aseguramos que la URL sea LA CORRECTA, según tu proyecto.
+            databaseURL: "https://la-cocina-de-la-abuela-658f4-default-rtdb.firebaseio.com",
+            projectId: "la-cocina-de-la-abuela-658f4",
+            storageBucket: "la-cocina-de-la-abuela-658f4.firebasestorage.app",
+            messagingSenderId: "642937419750",
+            appId: "1:642937419750:web:30d2aeb2327fd75d090827"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+    </script>
+    
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="header-content container">
+            <h1><i class="fas fa-utensils"></i> Restaurante ¡UNICO!</h1>
+            <nav>
+                <a href="#menu-section" class="nav-link">Menú del Día</a>
+                <a href="#carrito-section" class="nav-link">Mi Reserva</a>
+                <a href="#" class="nav-link admin-link-btn" id="admin-link">🔒 Admin (Entrar)</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <section id="menu-section">
+            <div class="glass-box">
+                <h2>🍲 Menú del Día</h2>
+                <p class="subtitle">Descubre los platos más deliciosos y auténticos de nuestra cocina.</p>
+                <div id="menu-container">
+                    <div class="loading-message">Cargando menú...</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="carrito-section">
+            <div class="glass-box">
+                <h2>🛒 Tu Reserva</h2>
+                <div class="carrito-list" id="carrito-items">
+                    <div class="empty-message">El carrito está vacío.</div>
+                </div>
+                
+                <div class="buy-panel">
+                    <span class="total-text">Total a Pagar: <strong id="carrito-total">$0</strong></span>
+                    <button class="btn-confirm pulse-whatsapp" id="btn-iniciar-reserva" disabled>
+                        Iniciar Reserva y Pago <i class="fas fa-credit-card"></i>
+                    </button>
+                    <p class="small-info">La reserva se confirma una vez allas canselado.</p>
+                </div>
+            </div>
+        </section>
+
+        <div id="detail-modal" class="modal">
+            <div class="modal-detail-content glass-box">
+                <span class="close-btn" data-modal-id="detail-modal">&times;</span>
+                <h3 id="detail-modal-title">Nombre del Plato</h3>
+                <div id="detail-modal-body">
+                    </div>
+                <div id="detail-modal-footer">
+                    </div>
+            </div>
+        </div>
+
+        <div id="data-modal" class="modal">
+            <div class="modal-content glass-box">
+                <span class="close-btn" data-modal-id="data-modal">&times;</span>
+                <h3>📝 Paso 1: Tus Datos</h3>
+                <form id="form-confirmar-datos">
+                    <label for="modal-nombre">Tu Nombre Completo:</label>
+                    <input type="text" id="modal-nombre" required>
+                    
+                    <label for="modal-telefono">Tu Teléfono (WhatsApp para contacto):</label>
+                    <input type="tel" id="modal-telefono" required minlength="8" placeholder="Ej: 3001234567">
+                    
+                    <button type="submit" class="btn-confirm">
+                        Continuar a la Reserva y Pago
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div id="login-modal" class="modal">
+            <div class="modal-content glass-box">
+                <span class="close-btn" data-modal-id="login-modal">&times;</span>
+                <h3>🔑 Inicio de Sesión Administrativa</h3>
+                <form id="form-login-admin">
+                    <label for="login-email">Correo Electrónico:</label>
+                    <input type="email" id="login-email" required>
+                    
+                    <label for="login-password">Contraseña:</label>
+                    <input type="password" id="login-password" required>
+                    
+                    <button type="submit" class="btn-confirm">
+                        Ingresar al Dashboard
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+
+    <section id="admin-main-view" class="hidden-view container">
+        
+
+        <div class="status-bar">
+    <span class="status-dot"></span> 
+    <strong>Servicio en Vivo:</strong> Recibiendo pedidos ahora
+</div>
+        <div class="admin-header">
+            <h2>Panel de Administración</h2>
+            <button id="btn-logout" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </button>
+        </div>
+        
+        <div class="glass-box">
+            <h2>📈 Dashboard de Administración</h2>
+            <p class="subtitle">Gestión en tiempo real de los pedidos entrantes.</p>
+
+            <div class="stats-grid">
+                <div class="stat-item pending-color">
+                    <h3>Pedidos Pendientes</h3>
+                    <p id="stat-pendientes">0</p>
+                </div>
+                <div class="stat-item preparing-color">
+                    <h3>En Preparación</h3>
+                    <p id="stat-preparando">0</p>
+                </div>
+                <div class="stat-item completed-color">
+                    <h3>Pedidos Entregados</h3>
+                    <p id="stat-entregados">0</p>
+                </div>
+                <div class="stat-item">
+                    <h3>Ventas Totales</h3>
+                    <p id="stat-ventas">$0</p>
+                </div>
+            </div>
+
+            <h3>Pedidos Pendientes (Por Tomar)</h3>
+            <div class="table-responsive glass-box">
+                <table class="data-table" id="table-pendientes">
+                    <thead>
+                        <tr>
+                            <th>ID Pedido</th>
+                            <th>Cliente</th>
+                            <th>Contacto</th>
+                            <th>Platos</th>
+                            <th>Total</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
+
+            <h3>Pedidos en Preparación</h3>
+            <div class="table-responsive glass-box">
+                <table class="data-table" id="table-preparando">
+                    <thead>
+                        <tr>
+                            <th>ID Pedido</th>
+                            <th>Cliente</th>
+                            <th>Contacto</th>
+                            <th>Platos</th>
+                            <th>Total</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="admin-utilities">
+                <button class="btn-utilidad" id="btn-export-data"><i class="fas fa-file-csv"></i> Exportar Historial</button>
+                <button class="btn-utilidad warning-btn" id="btn-reset-data"><i class="fas fa-trash-alt"></i> Borrar Historial Total</button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="clean-footer">
+    <div class="footer-line"></div>
+    <p class="credits">Desarrollado por <strong>Daniel Camilo Rey Flórez</strong></p>
+    <p class="support">Soporte Técnico Especializado: +57 322 7086610</p>
+    <p class="legal">© 2025 • Sistema GourmetFlow • Todos los derechos reservados</p>
+    </footer>
+    
+    <a href="https://wa.me/573227086610?text=Hola%2C%20quisiera%20consultar%20sobre%20mi%20reserva%20o%20hacer%20un%20pedido." 
+       id="floating-whatsapp-btn" target="_blank" class="pulse-whatsapp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script src="script.js"></script>
+    <script src="admin.js"></script>
+
+</body>
+</html>
