@@ -1,7 +1,26 @@
+let ordenEconomico = false;
 // =========================================================
 // 🚀 Reemplazo Total: script.js (Lógica de Venta, Carrito y UX Mejorada)
 // =========================================================
 document.addEventListener('DOMContentLoaded', () => {
+
+    // ESTO LE DA VIDA A LOS BOTONES DE CATEGORÍAS
+setTimeout(() => {
+    const botones = document.querySelectorAll('.cat-btn');
+    botones.forEach(boton => {
+        boton.addEventListener('click', (e) => {
+            // Quitamos el color naranja de todos los botones
+            botones.forEach(b => b.classList.remove('active'));
+            // Se lo ponemos al que tocamos
+            e.currentTarget.classList.add('active');
+
+            // Sacamos el nombre de la categoría y llamamos a cargarMenu
+            const categoria = e.currentTarget.getAttribute('data-category');
+            console.log("Filtrando por: " + categoria);
+            cargarMenu(categoria);
+        });
+    });
+}, 1000); // Esperamos 1 segundo a que la página cargue bien
 
     // 1. CONFIGURACIÓN E INICIALIZACIÓN DE FIREBASE
     const database = firebase.database();
@@ -103,52 +122,77 @@ document.addEventListener('DOMContentLoaded', () => {
     // 4. LÓGICA DE CARGA DEL MENÚ (CORREGIDA Y ESTABLE)
     // =========================================================
 
-    function cargarMenu() {
-        menuContainer.innerHTML = '<div class="loading-message">Cargando menú delicioso... ¡Un momento!</div>';
+    // 1. Pon esta variable afuera, arriba de la función, para que no se borre
+let categoriaActual = 'todos';
 
-        menuRef.once('value', (snapshot) => {
-            menuCompleto = snapshot.val() || {};
-            menuContainer.innerHTML = ''; 
+// LA FUNCIÓN DEFINITIVA: PROFESIONAL, CON FILTROS Y ORDEN DE PRECIOS
+function cargarMenu(categoriaFiltro = 'todos') {
+    // 1. Guardamos la categoría actual para que el sistema no se olvide
+    categoriaActual = categoriaFiltro; 
+    
+    // 2. Mensaje de carga elegante
+    menuContainer.innerHTML = '<div class="loading-message"><i class="fas fa-utensils fa-spin"></i> Organizando el menú para ti...</div>';
 
-            if (Object.keys(menuCompleto).length === 0) {
-                menuContainer.innerHTML = '<div class="empty-message"><i class="fas fa-exclamation-circle"></i> Aún no hay platos en el menú. ¡Cárgalos desde tu base de datos!</div>';
-                return;
+    menuRef.once('value', (snapshot) => {
+        const datos = snapshot.val() || {};
+        menuContainer.innerHTML = ''; 
+
+        // 3. Verificación: ¿La base de datos está totalmente vacía?
+        if (Object.keys(datos).length === 0) {
+            menuContainer.innerHTML = '<div class="empty-message"><i class="fas fa-exclamation-circle"></i> No hay platos disponibles en este momento.</div>';
+            return;
+        }
+
+        // 4. CONVERTIMOS A LISTA Y APLICAMOS EL ORDEN DE PRECIO
+        let listaPlatos = Object.keys(datos).map(id => ({ id, ...datos[id] }));
+
+        if (typeof ordenEconomico !== 'undefined' && ordenEconomico) {
+            listaPlatos.sort((a, b) => a.precio - b.precio);
+        }
+
+        // 5. DIBUJAMOS LOS PLATOS FILTRADOS
+        listaPlatos.forEach(plato => {
+            const coincideCat = (categoriaFiltro === 'todos' || plato.categoria === categoriaFiltro);
+
+            if (plato.disponible && coincideCat) { 
+                const card = document.createElement('div');
+                card.className = 'plato-card';
+                card.dataset.id = plato.id;
+
+                card.innerHTML = `
+                    <span class="plato-categoria">${plato.categoria || 'Especial'}</span>
+                    <h3>${plato.nombre || 'Plato sin nombre'}</h3>
+                    <div class="card-footer-info">
+                        <span class="precio">$${(plato.precio || 0).toLocaleString('es-CO')}</span>
+                        <button class="btn-ver-detalles" data-id="${plato.id}">
+                            <i class="fas fa-search"></i> Ver Detalles
+                        </button>
+                    </div>
+                `;
+                menuContainer.appendChild(card);
+
+                // Evento para abrir detalles
+                card.querySelector('.btn-ver-detalles').addEventListener('click', (e) => {
+                    e.stopPropagation(); 
+                    mostrarDetallePlato(plato.id);
+                });
             }
-
-            Object.keys(menuCompleto).forEach(platoId => {
-                const plato = menuCompleto[platoId];
-                
-                // Aseguramos que solo se muestren platos disponibles
-                if (plato.disponible) { 
-                    const card = document.createElement('div');
-                    card.className = 'plato-card';
-                    card.dataset.id = platoId;
-                    
-                    card.innerHTML = `
-                        <span class="plato-categoria">${plato.categoria || 'Sin Categoría'}</span>
-                        <h3>${plato.nombre || 'Plato sin nombre'}</h3>
-                        <div class="card-footer-info">
-                            <span class="precio">$${(plato.precio || 0).toLocaleString('es-CO')}</span>
-                            <button class="btn-ver-detalles" data-id="${platoId}">
-                                <i class="fas fa-search"></i> Ver Detalles
-                            </button>
-                        </div>
-                    `;
-                    menuContainer.appendChild(card);
-                    
-                    // Listener para el nuevo botón "Ver Detalles"
-                    card.querySelector('.btn-ver-detalles').addEventListener('click', (e) => {
-                        e.stopPropagation(); 
-                        mostrarDetallePlato(platoId);
-                    });
-                }
-            });
-
-        }, (error) => {
-            console.error("Error al leer el menú:", error);
-            menuContainer.innerHTML = '<div class="error-message">❌ Error al cargar el menú. Revisa tu `databaseURL` en index.html y las Reglas de Firebase.</div>';
         });
-    }
+
+        // 6. Verificación final: ¿Hay platos en esta categoría específica?
+        if (menuContainer.innerHTML === '') {
+            menuContainer.innerHTML = `
+                <div class="empty-message">
+                    <i class="fas fa-search"></i> 
+                    Lo sentimos, no hay platos en la categoría: <b>${categoriaFiltro}</b>
+                </div>`;
+        }
+
+    }, (error) => {
+        console.error("Error de Firebase:", error);
+        menuContainer.innerHTML = '<div class="error-message">❌ Hubo un problema al conectar con el servidor.</div>';
+    });
+}
 
     // =========================================================
     // 5. FUNCIÓN: MOSTRAR DETALLES Y AGREGAR (UX Avanzada)
@@ -375,7 +419,75 @@ mensaje += `\n*Estado:* Pendiente de confirmación.`;
         if (event.target == detailModal) detailModal.style.display = 'none'; 
     }
 
+    // ESCUCHAR CLICS EN LOS BOTONES DE CATEGORÍAS
+document.querySelectorAll('.cat-btn').forEach(boton => {
+    boton.addEventListener('click', (e) => {
+        // 1. Estética: Quitar 'active' de todos y ponerlo al que tocamos
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+
+        // 2. Acción: Sacar la categoría del atributo 'data-category' y filtrar
+        const categoriaSeleccionada = e.currentTarget.getAttribute('data-category');
+        console.log("Filtrando por:", categoriaSeleccionada); // Para que veas en consola si funciona
+        cargarMenu(categoriaSeleccionada);
+    });
+});
+
     // ⭐ Inicialización
     cargarMenu();
     actualizarCarritoDOM();
+});
+document.getElementById('btn-track').addEventListener('click', () => {
+    const phone = document.getElementById('track-phone').value;
+    if(!phone) return alert("Escribe tu número de celular");
+
+    // Buscamos en la base de datos el pedido con ese teléfono
+    firebase.database().ref('pedidos').orderByChild('telefono').equalTo(phone).limitToLast(1).on('value', (snapshot) => {
+        if(snapshot.exists()){
+            const data = snapshot.val();
+            const id = Object.keys(data)[0];
+            const pedido = data[id];
+            
+            document.getElementById('tracking-result').style.display = 'block';
+            actualizarBarra(pedido.estado);
+        } else {
+            alert("No encontramos pedidos activos con ese número.");
+        }
+    });
+});
+
+function actualizarBarra(estado) {
+    const steps = ['reservado', 'preparando', 'completado'];
+    const textoStatus = document.getElementById('tracking-status-text');
+    
+    // Limpiar clases
+    steps.forEach(s => document.getElementById(`step-${s.toLowerCase()}`).classList.remove('active'));
+    
+    if(estado === 'Reservado') {
+        document.getElementById('step-reservado').classList.add('active');
+        textoStatus.innerHTML = "Estado: <b>Estamos procesando tu orden...</b>";
+    } else if(estado === 'Preparando') {
+        document.getElementById('step-reservado').classList.add('active');
+        document.getElementById('step-preparando').classList.add('active');
+        textoStatus.innerHTML = "Estado: <b>¡Tu comida ya está en el fuego! 🔥</b>";
+    } else {
+        steps.forEach(s => document.getElementById(`step-${s.toLowerCase()}`).classList.add('active'));
+        textoStatus.innerHTML = "Estado: <b>✅ ¡Tu pedido está listo! Pasa por él.</b>";
+    }
+}
+// ESCUCHADOR DEL BOTÓN DE PRECIO
+document.getElementById('btn-ordenar-precio').addEventListener('click', (e) => {
+    ordenEconomico = !ordenEconomico; // Cambia entre ordenado y normal
+    
+    if (ordenEconomico) {
+        e.target.innerHTML = '<i class="fas fa-th-list"></i> Ver orden original';
+        e.target.style.background = '#C0392B'; // Cambia a rojo para avisar que puede quitarlo
+    } else {
+        e.target.innerHTML = '<i class="fas fa-sort-amount-down-alt"></i> Ver más económicos primero';
+        e.target.style.background = '#27AE60'; // Vuelve a verde
+    }
+    
+    // Sacamos cuál es la categoría activa para no perder el filtro al ordenar
+    const catActiva = document.querySelector('.cat-btn.active').getAttribute('data-category');
+    cargarMenu(catActiva);
 });
