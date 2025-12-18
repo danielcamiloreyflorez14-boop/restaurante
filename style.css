@@ -1171,7 +1171,7 @@ html {
     border: 1px solid var(--color-primary);
     background: transparent;
     color: white;
-    white-space: nowrap; /* Evita que el texto se parta */
+    white-space: nowrap; /* Evita que el texto se parta XD*/
     cursor: pointer;
     transition: 0.3s;
     font-weight: 500;
