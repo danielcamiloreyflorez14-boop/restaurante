@@ -1051,3 +1051,140 @@ html {
     background: var(--color-primary);
     border-radius: 10px;
 }
+/* ESTILOS DEL RASTREADOR */
+.tracking-card {
+    background: var(--color-card-bg);
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.search-box {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.search-box input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: #333;
+    color: white;
+}
+
+.tracking-visual {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.step {
+    flex: 1;
+    text-align: center;
+    color: #666;
+    transition: 0.3s;
+}
+
+.step.active { color: var(--color-secondary); transform: scale(1.1); }
+.step.active .icon { background: var(--color-secondary); color: white; }
+
+.step .icon {
+    width: 40px;
+    height: 40px;
+    background: #444;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+}
+
+.line {
+    flex: 1;
+    height: 3px;
+    background: #444;
+    margin-bottom: 25px;
+}
+/* MEJORA TOTAL DEL BOTÓN DE BÚSQUEDA (LA LUPA) */
+#btn-search-track {
+    background: var(--color-primary) !important; /* El naranja de tu marca */
+    color: white !important;
+    border: none !important;
+    width: 50px !important; /* Lo hacemos cuadrado para que se vea moderno */
+    height: 50px !important;
+    border-radius: 0 8px 8px 0 !important; /* Redondeado solo a la derecha */
+    cursor: pointer;
+    font-size: 1.2rem !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    margin-left: -5px; /* Para que se pegue al input y parezca una sola pieza */
+}
+
+#btn-search-track:hover {
+    background: var(--color-secondary) !important;
+    filter: brightness(1.2);
+}
+
+/* Ajuste del contenedor para que el input y el botón encajen perfecto */
+.track-input-group {
+    display: flex !important;
+    align-items: stretch !important;
+    max-width: 400px;
+    margin: 15px auto;
+}
+
+#track-phone-input {
+    flex: 1;
+    height: 50px !important;
+    border-radius: 8px 0 0 8px !important; /* Redondeado solo a la izquierda */
+    border: 2px solid #333 !important;
+    background: #111 !important;
+    color: white !important;
+    padding: 0 15px !important;
+    font-size: 1rem !important;
+}
+
+#track-phone-input:focus {
+    border-color: var(--color-secondary) !important;
+    outline: none;
+}
+.categories-container {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto; /* Permite deslizar si hay muchas categorías */
+    padding: 15px;
+    margin-bottom: 20px;
+    scrollbar-width: none; /* Oculta la barra en Firefox */
+}
+
+.categories-container::-webkit-scrollbar { display: none; } /* Oculta barra en Chrome/Safari */
+
+.cat-btn {
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: 1px solid var(--color-primary);
+    background: transparent;
+    color: white;
+    white-space: nowrap; /* Evita que el texto se parta */
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: 500;
+}
+
+.cat-btn.active, .cat-btn:hover {
+    background: var(--color-primary);
+    box-shadow: 0 4px 12px rgba(211, 84, 0, 0.4);
+}
+#stat-ventas {
+    color: var(--color-success);
+    font-size: 2.5rem;
+    font-weight: 900;
+    text-shadow: 0 0 15px rgba(39, 174, 96, 0.3);
+    transition: all 0.5s ease;
+}
