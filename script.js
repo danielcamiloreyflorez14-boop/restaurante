@@ -135,6 +135,7 @@ function cargarMenu(categoriaFiltro = 'todos') {
 
     menuRef.once('value', (snapshot) => {
         const datos = snapshot.val() || {};
+        menuCompleto = datos; // ⭐ ESTA ES LA CLAVE
         menuContainer.innerHTML = ''; 
 
         // 3. Verificación: ¿La base de datos está totalmente vacía?
