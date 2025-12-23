@@ -195,47 +195,60 @@ function cargarMenu(categoriaFiltro = 'todos') {
     });
 }
 
-    // =========================================================
-    // 5. FUNCIÓN: MOSTRAR DETALLES Y AGREGAR (UX Avanzada)
-    // =========================================================
-    function mostrarDetallePlato(platoId) {
-        const plato = menuCompleto[platoId];
-        if (!plato) return;
+// =========================================================
+// 5. FUNCIÓN: MOSTRAR DETALLES CORREGIDA (SIN TRABAS)
+// =========================================================
+window.mostrarDetallePlato = function(id) {
+    const plato = menuCompleto[id];
+    if (!plato) return;
 
-        const modalTitle = document.getElementById('detail-modal-title');
-        const modalBody = document.getElementById('detail-modal-body');
-        const modalFooter = document.getElementById('detail-modal-footer');
+    // Función auxiliar para inyectar texto sin errores si el ID no existe
+    const inyectar = (idElem, valor) => {
+        const el = document.getElementById(idElem);
+        if (el) el.innerText = valor;
+    };
 
-        modalTitle.textContent = plato.nombre;
-        
-        modalBody.innerHTML = `
-            <p class="detail-category"><i class="fas fa-tag"></i> Categoría: <span>${plato.categoria || 'General'}</span></p>
-            <p class="detail-description">${plato.descripcion || 'No hay una descripción detallada para este plato.'}</p>
-            <p class="detail-price-big">$${plato.precio.toLocaleString('es-CO')}</p>
-            
-            <div class="detail-quantity-control">
-                <label for="plato-cantidad">Cantidad:</label>
-                <input type="number" id="plato-cantidad" value="1" min="1" max="99" class="input-cantidad">
+    // 1. Llenamos los datos del plato (Si no existen en Firebase, usamos los de reserva)
+    inyectar('detail-modal-title', plato.nombre);
+    inyectar('detail-modal-description', plato.descripcion || "Plato exclusivo de la casa.");
+    inyectar('detail-modal-category', plato.categoria || "General");
+    inyectar('detail-modal-time', plato.tiempo || "15-20 min");
+    inyectar('detail-modal-calories', (plato.calorias || "---") + " kcal");
+    inyectar('detail-modal-diet', plato.dieta || "Tradicional");
+    inyectar('detail-modal-ingredients', plato.ingredientes || "Ingredientes frescos seleccionados.");
+    
+    // 2. Resolvemos el error de la línea 208 (Precio)
+    inyectar('detail-modal-price', `$${plato.precio.toLocaleString('es-CO')}`);
+
+    // 3. Re-generamos el footer para que el botón de "Añadir" siempre funcione
+    const footer = document.getElementById('detail-modal-footer');
+    if (footer) {
+        footer.innerHTML = `
+            <div class="price-container">
+                <span>Precio Total</span>
+                <h2 id="detail-modal-price-total">$${plato.precio.toLocaleString('es-CO')}</h2>
+            </div>
+            <div class="quantity-wrapper" style="display:flex; align-items:center; gap:12px;">
+                <input type="number" id="plato-cantidad-modal" value="1" min="1" max="99" class="input-cantidad">
+                <button id="btn-add-from-modal" class="btn-main-gold">
+                    <i class="fas fa-cart-plus"></i> Añadir
+                </button>
             </div>
         `;
 
-        modalFooter.innerHTML = `
-            <button class="btn-agregar-carrito" data-id="${platoId}"><i class="fas fa-cart-plus"></i> Agregar ${plato.nombre}</button>
-        `;
-        
-        modalFooter.querySelector('.btn-agregar-carrito').addEventListener('click', () => {
-            const cantidadInput = document.getElementById('plato-cantidad');
-            const cantidad = parseInt(cantidadInput.value);
-            if (cantidad > 0) {
-                agregarACarrito(platoId, cantidad);
-                detailModal.style.display = 'none'; 
-            } else {
-                alert('La cantidad debe ser mayor a cero.');
+        // Programamos el botón de añadir del modal
+        document.getElementById('btn-add-from-modal').onclick = function() {
+            const cant = parseInt(document.getElementById('plato-cantidad-modal').value);
+            if (cant > 0) {
+                agregarACarrito(id, cant); // Llama a tu función original
+                document.getElementById('detail-modal').style.display = 'none';
             }
-        });
-
-        detailModal.style.display = 'block';
+        };
     }
+
+    // 4. Mostramos el modal
+    document.getElementById('detail-modal').style.display = 'flex';
+};
 
 
     // =========================================================
@@ -492,3 +505,19 @@ document.getElementById('btn-ordenar-precio').addEventListener('click', (e) => {
     const catActiva = document.querySelector('.cat-btn.active').getAttribute('data-category');
     cargarMenu(catActiva);
 });
+
+
+// LÓGICA PARA QUITAR LA INTRO AUTOMÁTICAMENTE
+window.addEventListener('load', () => {
+    const intro = document.getElementById('intro-screen');
+    
+    // Esperamos 2.5 segundos de intro + 0.5 de transición
+    setTimeout(() => {
+        if (intro) {
+            intro.classList.add('intro-hidden');
+            // Quitamos el scroll bloqueado si decides bloquearlo durante la intro
+            document.body.style.overflow = 'auto';
+        }
+    }, 3000); 
+});
+
