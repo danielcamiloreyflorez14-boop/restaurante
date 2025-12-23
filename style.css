@@ -1188,3 +1188,230 @@ html {
     text-shadow: 0 0 15px rgba(39, 174, 96, 0.3);
     transition: all 0.5s ease;
 }
+
+/* --- DISEÑO ULTRA DETALLADO PARA DETAIL MODAL --- */
+.modal-grid-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.modal-header-premium {
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 15px;
+    margin-bottom: 10px;
+}
+
+.badge-category {
+    background: var(--color-primary);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.info-tech-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    background: rgba(0,0,0,0.2);
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.tech-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.8rem;
+    color: #bbb;
+}
+
+.tech-item i {
+    color: var(--color-secondary);
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+.tech-item strong {
+    color: white;
+    font-size: 0.9rem;
+    margin-top: 3px;
+}
+
+.detail-section h4 {
+    color: var(--color-secondary);
+    margin-bottom: 8px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ingredients-text {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #ddd;
+    font-style: italic;
+}
+
+.modal-footer-premium {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.price-container span {
+    display: block;
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.btn-main-gold {
+    background: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.btn-main-gold:hover {
+    transform: scale(1.05);
+}
+
+/* BOTÓN DE BÚSQUEDA PREMIUM (CORREGIDO - ANCHO AJUSTADO) */
+.btn-search-premium {
+    background: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    border: none;
+    padding: 0 20px; /* Reducido para que no sea tan ancho */
+    border-radius: 0 8px 8px 0; 
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Eliminamos el min-width que lo ensanchaba demasiado */
+    text-transform: uppercase;
+    font-size: 0.8rem; /* Un poco más pequeño para ahorrar espacio */
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(211, 84, 0, 0.2);
+    height: 50px; /* Alineado con la altura del input que pusimos antes */
+}
+
+.btn-search-premium:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+}
+
+.btn-search-premium:active {
+    transform: scale(0.98); /* Efecto de presionado sutil */
+}
+
+/* Efecto cuando está cargando */
+.btn-search-premium:disabled {
+    background: #444 !important;
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.8;
+}
+
+/* Ajuste para iconos dentro del botón */
+.btn-search-premium i {
+    margin-right: 8px;
+}
+
+
+
+
+/* --- ESTILOS DE LA INTRO --- */
+#intro-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: radial-gradient(circle, #2c3e50 0%, #000000 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Por encima de todo */
+    transition: opacity 0.8s ease, visibility 0.8s;
+}
+
+.intro-content {
+    text-align: center;
+    animation: fadeInIntro 1.5s ease-out;
+}
+
+.intro-icon {
+    font-size: 5rem;
+    color: var(--color-secondary);
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 15px var(--color-primary));
+}
+
+.intro-title {
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: white;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.intro-subtitle {
+    color: var(--color-text-light);
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    opacity: 0.8;
+}
+
+/* Animación de carga sutil */
+.intro-loader {
+    width: 50px;
+    height: 3px;
+    background: var(--color-primary);
+    margin: 30px auto;
+    position: relative;
+    overflow: hidden;
+    border-radius: 5px;
+}
+
+.intro-loader::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: var(--color-secondary);
+    left: -100%;
+    animation: loadLine 2s infinite;
+}
+
+@keyframes loadLine {
+    0% { left: -100%; }
+    50% { left: 0; }
+    100% { left: 100%; }
+}
+
+@keyframes fadeInIntro {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Clase para ocultar la intro */
+.intro-hidden {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    }
