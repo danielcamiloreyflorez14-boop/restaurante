@@ -41,6 +41,21 @@
 </head>
 <body>
 
+
+
+<div id="intro-screen">
+    <div class="intro-content">
+        <div class="intro-logo-wrapper">
+            <i class="fas fa-utensils intro-icon"></i>
+        </div>
+        <h1 class="intro-title">Restaurante</h1>
+        <p class="intro-subtitle">Experiencia Gastronómica Exclusiva</p>
+        <div class="intro-loader"></div>
+    </div>
+</div>
+
+
+
     <header class="main-header">
         <div class="header-content container">
             <h1><i class="fas fa-utensils"></i> Restaurante ¡UNICO!</h1>
@@ -61,7 +76,11 @@
         <p>Ingresa tu número de celular para ver el estado de tu comida:</p>
         <div class="search-box">
             <input type="tel" id="track-phone" placeholder="Ej: 3227086610">
-            <button id="btn-track"><i class="fas fa-search"></i> Buscar</button>
+            <button id="btn-track" class="btn-search-premium">
+    <span class="btn-text"><i class="fas fa-search"></i> Buscar Pedido</span>
+    <span class="btn-loader" style="display: none;"><i class="fas fa-spinner fa-spin"></i> Buscando...</span>
+</button>
+
         </div>
         
         <div id="tracking-result" style="display: none;">
@@ -134,16 +153,53 @@
             </div>
         </section>
 
-        <div id="detail-modal" class="modal">
-            <div class="modal-detail-content glass-box">
-                <span class="close-btn" data-modal-id="detail-modal">&times;</span>
-                <h3 id="detail-modal-title">Nombre del Plato</h3>
-                <div id="detail-modal-body">
-                    </div>
-                <div id="detail-modal-footer">
-                    </div>
-            </div>
+<div id="detail-modal" class="modal">
+    <div class="modal-detail-content glass-box animate-in">
+        <span class="close-btn" data-modal-id="detail-modal">&times;</span>
+        
+        <div class="modal-header-premium">
+            <h3 id="detail-modal-title">Nombre del Plato</h3>
+            <span id="detail-modal-category" class="badge-category">Categoría</span>
         </div>
+
+        <div id="detail-modal-body" class="modal-grid-layout">
+            <div class="detail-section">
+                <h4><i class="fas fa-info-circle"></i> Descripción</h4>
+                <p id="detail-modal-description">Cargando descripción...</p>
+            </div>
+
+            <div class="info-tech-grid">
+                <div class="tech-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Preparación</span>
+                    <strong id="detail-modal-time">-- min</strong>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-fire"></i>
+                    <span>Calorías</span>
+                    <strong id="detail-modal-calories">-- kcal</strong>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-leaf"></i>
+                    <span>Dieta</span>
+                    <strong id="detail-modal-diet">Estándar</strong>
+                </div>
+            </div>
+
+            <div class="detail-section">
+                <h4><i class="fas fa-utensils"></i> Ingredientes Principales</h4>
+                <p id="detail-modal-ingredients" class="ingredients-text">Cargando ingredientes...</p>
+            </div>
+            
+            <div id="detail-modal-price" style="display:none;"></div>
+        </div>
+
+        <div id="detail-modal-footer" class="modal-footer-premium">
+            </div>
+    </div>
+</div>
+
+
 
         <div id="data-modal" class="modal">
             <div class="modal-content glass-box">
