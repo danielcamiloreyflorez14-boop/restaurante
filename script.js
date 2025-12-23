@@ -391,41 +391,34 @@ window.mostrarDetallePlato = function(id) {
             });
         }
     }
-    
     function sendWhatsappConfirmation(nombre, total, platos) {
         const telefonoRestaurante = '573227086610'; 
-        let mensaje = `*✅ NUEVA ORDEN RECIBIDA* \n`;
-mensaje += `*Restaurante:* La Cocina de la Abuela\n`;
-mensaje += `--------------------------\n`;
-mensaje += `*Cliente:* ${nombre}\n`;
-mensaje += `*Pedido:* \n`;
-platos.forEach(item => {
-    mensaje += `• ${item.cantidad}x ${item.nombre}\n`;
-});
-mensaje += `--------------------------\n`;
-mensaje += `*TOTAL A PAGAR:* $${total.toLocaleString('es-CO')}\n`;
-mensaje += `\n*Estado:* Pendiente de confirmación.`;
         
+        // Estructura limpia del mensaje
+        let mensaje = `*✅ NUEVA ORDEN (PRUEBA DEMO)*\n`;
+        mensaje += `*Restaurante:* Restaurante Demo\n`;
+        mensaje += `--------------------------\n`;
+        mensaje += `*Cliente:* ${nombre}\n`;
+        mensaje += `*Pedido:* \n`;
+        
+        // Solo un ciclo para los platos, bien organizado
         platos.forEach(item => {
-            mensaje += `  - ${item.cantidad}x ${item.nombre}\\n`;
+            mensaje += `• ${item.cantidad}x ${item.nombre}\n`;
         });
         
-        mensaje += `\\n*Por favor, revisa el Dashboard Admin para el detalle de la reserva y confirma con el cliente.*`;
+        mensaje += `--------------------------\n`;
+        mensaje += `*TOTAL A PAGAR:* $${total.toLocaleString('es-CO')}\n\n`;
+        mensaje += `*Estado:* Pendiente de confirmación.\n`;
+        mensaje += `📌 _Favor revisar el Panel Admin para procesar esta orden._`;
         
+        // Codificación limpia para WhatsApp
         const encodedMessage = encodeURIComponent(mensaje);
         const whatsappUrl = `https://wa.me/${telefonoRestaurante}?text=${encodedMessage}`;
         
         window.open(whatsappUrl, '_blank');
     }
     
-    // Cierre de Modales por botón
-    document.querySelectorAll('.close-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const modalId = btn.dataset.modalId; 
-            document.getElementById(modalId).style.display = 'none';
-        });
-    });
-
+    
     // Cierre de Modales por clic fuera
     window.onclick = function(event) {
         if (event.target == dataModal) dataModal.style.display = 'none';
