@@ -16,22 +16,27 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script> 
     
     <script>
-        // CONFIGURACIÓN DE TU PROYECTO (COPIADA DE TU ARCHIVO)
+        // =========================================================
+        // ⚙️ CONFIGURACIÓN DE TU NUEVO PROYECTO (ACTUALIZADA)
+        // =========================================================
         const firebaseConfig = {
-            apiKey: "AIzaSyAUjXqLedKGyoxoN_D9guU_vz8nLyON3jI",
-            authDomain: "la-cocina-de-la-abuela-658f4.firebaseapp.com",
-            // CRÍTICO: Aseguramos que la URL sea LA CORRECTA, según tu proyecto.
-            databaseURL: "https://la-cocina-de-la-abuela-658f4-default-rtdb.firebaseio.com",
-            projectId: "la-cocina-de-la-abuela-658f4",
-            storageBucket: "la-cocina-de-la-abuela-658f4.firebasestorage.app",
-            messagingSenderId: "642937419750",
-            appId: "1:642937419750:web:30d2aeb2327fd75d090827"
+            apiKey: "AIzaSyBks0ouNuDD8iNtym6ITR3YRTBJLQM4uuk",
+            authDomain: "restaurante-e06fb.firebaseapp.com",
+            databaseURL: "https://restaurante-e06fb-default-rtdb.firebaseio.com",
+            projectId: "restaurante-e06fb",
+            storageBucket: "restaurante-e06fb.firebasestorage.app",
+            messagingSenderId: "264187825636",
+            appId: "1:264187825636:web:84d5c19837a04253114bf1",
+            measurementId: "G-7D7Z99YFNT" 
         };
 
+        // Inicializar Firebase solo si no se ha hecho antes
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
+            console.log("🔥 Firebase conectado exitosamente al proyecto: restaurante-e06fb");
         }
     </script>
+    
     
 </head>
 <body>
